@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple E-Commerce</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .products { display: flex; flex-wrap: wrap; gap: 20px; }
+        .product { border: 1px solid #ddd; padding: 15px; width: 200px; }
+        .cart-link { float: right; }
+    </style>
+</head>
+<body>
+    <h1>Welcome to Our Store</h1>
+    <a href="{{ url_for('view_cart') }}" class="cart-link">View Cart ({{ cart|length }})</a>
+    
+    <div class="products">
+        {% for product in products %}
+        <div class="product">
+            <h3>{{ product.name }}</h3>
+            <p>Price: ${{ "%.2f"|format(product.price) }}</p>
+            <form method="POST" action="{{ url_for('add_to_cart') }}">
+                <input type="hidden" name="product_id" value="{{ product.id }}">
+                <label>Qty: <input type="number" name="quantity" value="1" min="1"></label>
+                <button type="submit">Add to Cart</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

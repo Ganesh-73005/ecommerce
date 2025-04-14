@@ -1,30 +1,128 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Simple E-Commerce</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .products { display: flex; flex-wrap: wrap; gap: 20px; }
-        .product { border: 1px solid #ddd; padding: 15px; width: 200px; }
-        .cart-link { float: right; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopEasy - Online Store</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <h1>Welcome to Our Store</h1>
-    <a href="{{ url_for('view_cart') }}" class="cart-link">View Cart ({{ cart|length }})</a>
-    
-    <div class="products">
-        {% for product in products %}
-        <div class="product">
-            <h3>{{ product.name }}</h3>
-            <p>Price: ${{ "%.2f"|format(product.price) }}</p>
-            <form method="POST" action="{{ url_for('add_to_cart') }}">
-                <input type="hidden" name="product_id" value="{{ product.id }}">
-                <label>Qty: <input type="number" name="quantity" value="1" min="1"></label>
-                <button type="submit">Add to Cart</button>
-            </form>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>ShopEasy</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('index') }}" class="active">Home</a></li>
+                    <li><a href="#">Categories</a></li>
+                    <li><a href="#">Deals</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="cart-icon">
+                <a href="{{ url_for('view_cart') }}">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count">{{ cart|length }}</span>
+                </a>
+            </div>
         </div>
-        {% endfor %}
+    </header>
+
+    <div class="hero">
+        <div class="container">
+            <h2>Welcome to ShopEasy</h2>
+            <p>Discover amazing products at unbeatable prices</p>
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Search products...">
+                <button id="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
     </div>
+
+    <main class="container">
+        <div class="filters">
+            <div class="filter-group">
+                <label for="sort-select">Sort by:</label>
+                <select id="sort-select">
+                    <option value="default">Featured</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="name">Name</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="products-container">
+            {% for product in products %}
+            <div class="product-card" data-id="{{ product.id }}" data-price="{{ product.price }}">
+                <div class="product-image">
+                    <img src="{{ product.image if product.image else '/static/images/placeholder.jpg' }}" alt="{{ product.name }}">
+                </div>
+                <div class="product-info">
+                    <h3>{{ product.name }}</h3>
+                    <div class="product-price">${{ "%.2f"|format(product.price) }}</div>
+                    <div class="product-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="far fa-star"></i>
+                        <span>(4.0)</span>
+                    </div>
+                </div>
+                <form method="POST" action="{{ url_for('add_to_cart') }}" class="add-to-cart-form">
+                    <input type="hidden" name="product_id" value="{{ product.id }}">
+                    <div class="quantity-control">
+                        <button type="button" class="quantity-btn minus">-</button>
+                        <input type="number" name="quantity" value="1" min="1" max="99" class="quantity-input">
+                        <button type="button" class="quantity-btn plus">+</button>
+                    </div>
+                    <button type="submit" class="add-to-cart-btn">
+                        <i class="fas fa-cart-plus"></i> Add to Cart
+                    </button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>ShopEasy</h3>
+                    <p>Your one-stop shop for all your needs.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-envelope"></i> info@shopeasy.com</p>
+                    <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 ShopEasy. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="notification" class="notification">
+        <div class="notification-content">
+            <i class="fas fa-check-circle"></i>
+            <span id="notification-message">Item added to cart!</span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
